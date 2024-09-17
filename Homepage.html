@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simpleapp</title>
+    <link rel="stylesheet" href="styles/Homepage.css">   
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.6/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <img id="app-logo" src="images/App_logo.png">
+    <div id="main-content">
+    </div>   
+
+    <script>
+        //// Select which "page" to load based on sessionStorage
+        $(document).ready(function() {
+            var currentPage = sessionStorage.getItem('currentPage');
+
+            if (!currentPage || currentPage === 'main-page')
+                mainPage();
+            else if (currentPage === 'user-display') 
+                displayUsers(); 
+            else if (currentPage === 'user-register')
+                registerUser();
+            
+        });
+
+        //// Datepicker
+        $('#main-content').on('click', '#birthdate',function() {
+            flatpickr("#birthdate", {
+                dateFormat: "F j, Y",  
+                allowInput: false,  
+                altInput: true,     
+                altFormat: "F j, Y", 
+                defaultDate: "today",  
+                minDate: "January 1, 1920",
+                maxDate: "today", 
+                yearSelectorType: "static", 
+                enableTime: false, 
+                mode: "single"
+            });
+        });
+
+        //// Users display script
+        var displayUsers = function(){
+            sessionStorage.setItem('currentPage', 'user-display');
+            $("#main-content").empty();
+            
+            // Table creation, population and appending
+                var table = `
+                    <table id="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                    </table>
+                `;
+
+                $('#main-content').append(table);
+
+                $.ajax({
+                    url: 'http://localhost:8080/api/user/all', 
+                    type: 'GET',
+                    success: function(response) {
+                      
+                        // Populate the table
+                        response.forEach(function(user) {
+                            var tableRow = `
+                                <tr>
+                                    <td class="info" data-id="${user.id}">${user.name}</td>
+                                    <td class="info" data-id="${user.id}">${user.surname}</td>
+                                    <td><i class="fa fa-trash" data-id="${user.id}"></i></td>
+                                </tr>
+                            `;
+                            $('#user-table tbody').append(tableRow);
+                        });
+
+                        
+                        $('#user-table').DataTable({
+                            searching: false,
+                            columns: [
+                                null,
+                                null,   
+                                { orderable: false }, 
+                            ]
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching users:", error);
+                    }
+                });
+
+            
+            // Button creation and appending
+                var buttons = `
+                    <div class="buttons">
+                        <button class="back_btn left_btn">Back</button>
+                    </div>
+                `;
+
+                $('#main-content').append(buttons);
+        }
+
+        //// Return to main page script
+        var mainPage = function(){
+            sessionStorage.setItem('currentPage', 'main-page');
+
+            $("#main-content").empty();
+
+            var home = `
+            <label for="select-prompt">Welcome to the site. Please select an action:</label><br>
+                <div class="buttons">
+                    <button id="display_btn" class="left_btn">Display users</button>
+                    <button id="register_btn1" class="register_btn">Register new user</button>
+                </div> 
+            `;
+
+            $('#main-content').append(home);
+        }
+
+        //// User registration script
+        var registerUser = function(){
+            sessionStorage.setItem('currentPage', 'user-register');
+
+            $("#main-content").empty();
+
+            $(document).ready(function() {
+            // Form creation and appending
+                var form = `
+                    <div id="user-info">
+                    <label for="name">Name* :</label><br>
+                    <input type="text" placeholder="John" id="name"><br><br>
+                    <label for="surname">Surname* :</label><br>
+                    <input type="surname" placeholder="Doe" id="surname"><br>
+                    <label for="gender">Gender* :</label><br>
+                    <select name="gender" id="gender" value="">
+                        <option disabled selected value> -- select an option -- </option>
+                        <option value="M">M</option>
+                        <option value="F">F</option>
+                    </select><br>
+                    <label for="birthdate">Birthdate* :</label><br>
+                    <input type="text" id="birthdate"><br>
+                    <label for="work-address">Work address:</label><br>
+                    <textarea placeholder="Main Street 8" id="work-address"></textarea><br>
+                    <label for="home-address">Home address:</label><br>
+                    <textarea placeholder="Main Street 8" id="home-address"></textarea><br>
+                    <div id="mandatory-prompt">*Mandatory field</div><br>
+                    <div id="msg-display"></div>
+                </div>
+                `;
+
+                $('#main-content').append(form);
+
+            // Buttons creation and appending
+                var buttons = `
+                <div class="buttons">
+                    <button class="back_btn left_btn">Back</button> 
+                    <button id="register_btn2" class="register_btn">Register</button>
+                </div> 
+                `;
+ 
+                $('#main-content').append(buttons);
+            })
+        }
+
+
+
+        //// User display button script
+        $('#main-content').on('click', '#display_btn', function(){
+                displayUsers();
+            });
+
+
+        //// User deletion script
+        $('#main-content').on('click', '.fa-trash', function(){
+            var userId = $(this).data('id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Warning: user deletion is permanent",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete anyway',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: 'http://localhost:8080/api/user/' + userId, 
+                        type: 'DELETE',
+                        success: function(response) {
+                            Swal.fire(
+                                'Deleted!',
+                                'User has been deleted',
+                                'success'
+                            );
+                            displayUsers();
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to delete the user',
+                                'error'
+                            );
+                        }
+                    });
+            }});
+
+        });
+
+
+        //// Clicking on table row/ selecting a user script
+        $('#main-content').on('click', 'td.info', function() {
+            var userId = $(this).data('id');
+            var newTabUrl = 'FullInfo.html?id=' + encodeURIComponent(userId);
+            try {
+                window.open(newTabUrl, '_blank');
+            } catch (e) {
+                alert("Failed to open new tab:", e);
+            }
+        });
+       
+
+        //// User registration choice script
+        $('#main-content').on('click', '#register_btn1', function(){
+            registerUser();
+        });
+
+
+        //// User registration submission script
+        $('#main-content').on('click', '#register_btn2', function(){
+            var name = $('#name').val();
+            var surname = $('#surname').val();
+            var gender = $('#gender').val();
+            var birthdate = $('#birthdate').val();
+            var workAddress = $('#work-address').val();
+            var homeAddress = $('#home-address').val();
+            
+            $("#msg-display").empty();
+            if(!name.trim() || !surname.trim() || gender == null || !birthdate.trim()){
+                $("#msg-display").text("Mandatory fields left empty");
+                $("#msg-display").removeClass("success").addClass("error");
+            }
+            else {
+                $.ajax({
+                    url: 'http://localhost:8080/api/user', 
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        name: name,
+                        surname: surname,
+                        birthdate: birthdate,
+                        gender: gender,
+                        workAddress: workAddress,
+                        homeAddress: homeAddress
+                    }),
+                    success: function(response) {
+                        $("#msg-display").text("Successful registration!");
+                        $("#msg-display").removeClass("error").addClass("success");
+                    },
+                    error: function(xhr, status, error) {
+                        $("#msg-display").text("Error registering the user, please try again");
+                        $("#msg-display").removeClass("success").addClass("error");
+                    }
+                });
+            }
+        });
+
+
+        //// Back button 
+        $('#main-content').on('click', '.back_btn', function(){
+            mainPage();
+        });
+
+    </script> 
+</body>
+</html>

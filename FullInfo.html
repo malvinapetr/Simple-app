@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full info page</title>
+    <link rel="stylesheet" href="styles/FullInfo.css"> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    <img id="app-logo" src="images/App_logo.png">
+    <!-- Selected user full info display -->
+    <table id="user-full-table">
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Gender</th>
+            <th>Birthdate</th>
+            <th>Work address</th>
+            <th>Home address</th>
+        </tr>
+        <tr id="user-data">
+            <td contenteditable id="name"></td>
+            <td contenteditable id="surname"></td>
+            <td id="gender"></td>
+            <td id="birthdate"></td>
+            <td contenteditable id="work-address"></td>
+            <td contenteditable id="home-address"></td>
+        </tr>
+    </table> 
+    <div id="msg-display"></div>
+    <div class="buttons">
+        <button id="update_btn">Update data</button>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var urlParams = new URLSearchParams(window.location.search);
+
+            $.ajax({
+                    url: 'http://localhost:8080/api/user/' + urlParams.get('id'), 
+                    type: 'GET',
+                    success: function(response) {
+                        $("#name").text(response.name);
+                        $("#surname").text(response.surname);
+                        $("#gender").text(response.gender);
+                        $("#birthdate").text(response.birthdate);
+                        $("#work-address").text(response.workAddress);
+                        $("#home-address").text(response.homeAddress);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+        });
+
+        //// Datepicker 
+        flatpickr("#birthdate", {
+                dateFormat: "F j, Y",  
+                allowInput: true,    
+                altInput: false,      
+                defaultDate: "today", 
+                minDate: "1920-01-01",
+                maxDate: "today",
+                enableTime: false,    
+                mode: "single",
+                onChange: function(selectedDates, dateStr, instance) {
+                    $("#birthdate").text(dateStr);}
+            });
+
+        //// Gender toggler
+        $('#gender').click(function(){
+            if($('#gender').text().trim() === 'M')
+                $('#gender').text('F');
+            else if($('#gender').text().trim() === 'F')
+                $('#gender').text('M');
+        });
+
+
+        //// Update user data script
+        $('#update_btn').click(function(){   
+
+            if(!$('#name').text().trim() || !$('#surname').text().trim()){
+                $("#msg-display").text("Mandatory fields left empty");
+                $("#msg-display").removeClass("success").addClass("error");
+            }
+            else{
+                var urlParams = new URLSearchParams(window.location.search);
+                $.ajax({
+                    url: 'http://localhost:8080/api/user/' + urlParams.get('id'),
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        name: $('#name').text(),
+                        surname: $('#surname').text(),
+                        gender: $('#gender').text(),
+                        birthdate: $('#birthdate').text(),
+                        workAddress: $('#work-address').text(),
+                        homeAddress: $('#home-address').text()
+                    }),
+                    success: function(response) {
+                        $("#msg-display").text("Successful registration!");
+                        $("#msg-display").removeClass("error").addClass("success");
+                    },
+                    error: function(xhr, status, error) {
+                        $("#msg-display").text("Error updating the data, please try again");
+                        $("#msg-display").removeClass("success").addClass("error");
+                    }
+                });
+            }
+        });
+
+    </script> 
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+body {
+    background-color: rgb(184, 232, 237);
+ } 
+ 
+#app-logo{
+    width: 200px;
+    height: 100px;
+} 
+
+#user-full-table{
+    table-layout: fixed;
+    border-top: 1.5px groove black;
+    border-bottom: 1.5px groove black;
+    border-radius: 3px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th,td{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    padding: 10px;
+    width: 180px;
+    max-width: 180px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.buttons{
+    display: block;
+    text-align: center;
+}
+
+#update_btn{
+    padding-top: 5px;
+    font-family: Arial;
+    font-size: 14px;
+    margin-top: 25px;
+    padding: 10px 15px 10px 15px;
+    min-width: 150px;
+    border-radius: 3px;
+    background-color: darkblue;
+    color:rgb(178, 242, 242);
+    border:none;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+#update_btn:hover
+{
+cursor:pointer;
+background-color: rgb(178, 242, 242);
+color: darkblue;
+}
+
+#gender:hover, #birthdate:hover {
+    cursor: pointer;
+}
+
+.error{color:red;}
+
+.success {color: green;}

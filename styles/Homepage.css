@@ -1,0 +1,150 @@
+body {
+    background-color: rgb(184, 232, 237);
+ } 
+ 
+#app-logo{
+    width: 200px;
+    height: 100px;
+} 
+ 
+label[for="select-prompt"],
+label[for="name"],
+label[for="surname"],
+label[for="gender"],
+label[for="birthdate"],
+label[for="work-address"],
+label[for="home-address"] {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight:bold;
+    font-size: 125%;
+    color: black;
+    display:grid;
+    justify-content: center;
+    margin-top: 2%; 
+}
+
+label[for="select-prompt"]{
+    margin-top: 12%; 
+}
+
+.buttons{
+    display: block;
+    text-align: center;
+}
+
+
+/*login/signup buttons*/
+.left_btn, .register_btn {
+    padding-top: 5px;
+    font-family: Arial;
+    font-size: 14px;
+    margin-top: 13px;
+    padding: 10px 15px 10px 15px;
+    min-width: 150px;
+    border-radius: 3px;
+    background-color: darkblue;
+    color:rgb(178, 242, 242);
+    border:none;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.left_btn{
+    margin-right: 15px;
+}
+
+/*button hover*/
+.left_btn:hover, .register_btn:hover
+ {
+cursor:pointer;
+background-color: rgb(178, 242, 242);
+color: darkblue;
+}
+
+
+/*user info div */
+#user-info {
+    position:relative;
+    display:grid;
+    max-width: 35%;
+    min-width: 250px;
+    border: 1.5px solid black;
+    border-radius: 3px;
+    padding: 15px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+/*user info text-fields */
+#name, #surname, #email, #gender, #birthdate,
+#work-address,#home-address{
+    font-size: 90%;
+    padding-left: 6px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 3px;
+    border:none;
+    opacity: 0.9;
+    }
+ 
+#mandatory-prompt{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+/*text-field placeholders*/
+#name::placeholder, 
+#surname::placeholder,
+#email::placeholder,
+#work-address::placeholder,
+#home-address::placeholder{
+    opacity: 0.3;
+    font-style: italic;
+}
+
+#user-table{
+    table-layout: fixed;
+    border-top: 1.5px groove black;
+    border-bottom: 1.5px groove black;
+    border-radius: 3px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th,td{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    padding: 10px;
+    width: 250px;
+    max-width: 250px;
+    text-align: center !important;
+    word-wrap: break-word;
+}
+
+th:nth-child(3) {
+    border-bottom: none !important;  
+}
+
+.error,.fa.fa-trash {color:red;}
+
+.success {color: green;}
+
+.fa.fa-trash:hover{
+    cursor: pointer;
+    color: rgba(255, 10, 10, 0.4);
+}
+
+td.info:hover{
+    background-color:rgba(178, 242, 242, 0.7);
+    cursor:pointer;
+}
+
+input, select, textarea{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+textarea{
+    resize: none;
+    height: 18px;
+}
+
+
+
