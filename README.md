@@ -1,2 +1,2 @@
 # Simple-app
-Repository created for a simple web building exercise 
+Simple web development exercise implementing basic frontend and backend functionality.
